@@ -15,5 +15,5 @@ class JiraAPI(JIRA):
                 'priority': priority,
                 'assignee': {'displayName', assignee}
                 }
-        return new_issue = self.create_issue(fields=new_issue_dict)
+        return self.create_issue(fields=new_issue_dict)
 
