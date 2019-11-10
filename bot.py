@@ -2,12 +2,20 @@ import os
 import time
 import re
 from slackclient import SlackClient
+import JiraAPI
+#Using 'SLACK_BOT_TOKEN' sys env
+#Using 'JIRA_LOGIN', 'JIRA_PASSWORD', 'JIRA_URL' sys env
 
 slack_client = SlackClient(os.environ('SLACK_BOT_TOKEN'))
+jira_api = JiraAPI(options={'server':str(os.environ('JIRA_URL'))}, basic_auth=(str(os.environ('JIRA_LOGIN')), str(os.environ('JIRA_PASSWORD'))))
 jirabot_id = None
 
 RTM_READ_DELAY = 1 #1 seconds to delay between reading
 EXAMPLE_COMMAND = "create bug Summary Description 6.5"
+CREATE_BUG_COMMAND = "create bug"
+CREATE_TASK_COMMAND = "create task"
+CREATE_STORY_COMMAND = "create story"
+CREATE_IMPROVEMENT_COMMAND = "create improvement"
 MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
 
 if __name__ == "__main__":
@@ -43,9 +51,18 @@ def handle_command(command, channel):
     #Default response if the command is wrong"""
     default_response = "I'm sorry, but the command isn't right. Try *{}*.".format(EXAMPLE_COMMAND)
     response = None
-    if command.startswith("create bug"):
-        #response = ""
-        #TODO: Jira integration for commands
-        pass
+
+    #Issue fields taken from command
+    issue_type = None
+    issue_summary = None
+    issue_description = None
+    issue_assigne = None
+    issue_priority = None
+
+    if command.startswith("create"):
+        #TODO:Split command into issue fields according to sense (not just whitespaces or smth)Maybe only two parameters can be obtained through commands
+        #Like "create_bug {Summary}.Should've done that way for now
+        new_issue = jira_api.create_task(type="Bug", "Sample bug created by bot", "Description of the sample bug created by bot", "Anatoliy Romsa", "P3")
+        response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority"
     #Send response to the channel
     slack_client.api_call("chat.postMessage", channel=channel, text=response or default_response)
