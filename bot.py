@@ -11,7 +11,7 @@ jira_api = JiraAPI(options={'server':str(os.environ('JIRA_URL'))}, basic_auth=(s
 jirabot_id = None
 
 RTM_READ_DELAY = 1 #1 seconds to delay between reading
-EXAMPLE_COMMAND = "create bug Summary Description 6.5"
+EXAMPLE_COMMAND = "To create jira issue just type 'create_{issue type} {issue_summary}'. For example, 'create_bug This bot stinks'"
 CREATE_BUG_COMMAND = "create bug"
 CREATE_TASK_COMMAND = "create task"
 CREATE_STORY_COMMAND = "create story"
@@ -46,6 +46,10 @@ def parse_direct_mention(message_text):
     #The first group contains username, the second - the remaining message
     return (matches.group(1), matches.group(2).strip()) if matches else (None, None)
 
+def jira_bot_say(message_text, channel):
+    """Calling bot response with given text into the given channel"""
+    slack_client.api_call("chat.postMessage", channel=channel, text=message_text)
+
 def handle_command(command, channel):
     """Executes command if the command is known"""
     #Default response if the command is wrong"""
@@ -59,10 +63,22 @@ def handle_command(command, channel):
     issue_assigne = None
     issue_priority = None
 
-    if command.startswith("create"):
-        #TODO:Split command into issue fields according to sense (not just whitespaces or smth)Maybe only two parameters can be obtained through commands
-        #Like "create_bug {Summary}.Should've done that way for now
-        new_issue = jira_api.create_task(type="Bug", "Sample bug created by bot", "Description of the sample bug created by bot", "Anatoliy Romsa", "P3")
+    if command.startswith("create_bug"):
+        #Take summary from the command
+        issue_summary = command[11:]
+        new_issue = jira_api.create_task(type="Bug", issue_summary, issue_summary, "Anatoliy Romsa", "P3")
+        response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority"
+    elif command.startwith("create_task"):
+        issue_summary = command[12:]
+        new_issue = jira_api.create_task(type="Task", issue_summary, issue_summary, "Anatoliy Romsa", "P3")
+        response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority"
+    elif command.startwith("create_story"):
+        issue_summary = command[13:]
+        new_issue = jira_api.create_task(type="Story", issue_summary, issue_summary, "Anatoliy Romsa", "P3")
+        response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority"
+    elif command.startwith("create_improvement"):
+        issue_summary = command[19:]
+        new_issue = jira_api.create_task(type="Improvement", issue_summary, issue_summary, "Anatoliy Romsa", "P3")
         response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority"
     #Send response to the channel
     slack_client.api_call("chat.postMessage", channel=channel, text=response or default_response)
