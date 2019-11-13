@@ -5,7 +5,7 @@ from jira import JIRA
 class JiraAPI(JIRA):
     project = 'FOT'
 
-    def create_task(type='Bug', summary, description, assignee, priority):
+    def create_task(issue_type, summary, description, assignee, priority):
         project = self.project(project)
         new_issue_dict = {
                 'project': {'id': project.id},
