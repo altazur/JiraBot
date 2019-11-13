@@ -25,7 +25,7 @@ MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
 @RTMClient.run_on(event="message")
 def parse_bot_commands(**payload):
     """Return tuple (message, channel) if there is a bot command"""
-    slack_events = payload['slack_events']
+    slack_events = payload['data']
     for event in slack_events:
         user_id, message = parse_direct_mention(event["text"])
         if user_id == jirabot_id:
