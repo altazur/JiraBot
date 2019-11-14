@@ -12,7 +12,6 @@ jira==2.0.0
 multidict==4.5.2
 oauthlib==3.1.0
 pbr==5.4.3
-pkg-resources==0.0.0
 pycparser==2.19
 PyJWT==1.7.1
 requests==2.22.0
