@@ -25,24 +25,29 @@ def create_issue(**payload):
 
     if text.startswith(CREATE_BUG_COMMAND):
         issue_summary = text[11:]
-        new_issue = jira_api.create_task("Bug", issue_summary, issue_summary, "Anatoliy Romsa", "P3")
+        new_issue = jira_api.create_task("Bug", issue_summary, issue_summary, "Anatoliy.Romsa", "P3")
         response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority"
-    elif text.startwith(CREATE_TASK_COMMAND):
+        web_client.chat_postMessage(channel=channel_id, text=response)
+    elif text.startswith(CREATE_TASK_COMMAND):
         issue_summary = text[12:]
-        new_issue = jira_api.create_task("Task", issue_summary, issue_summary, "Anatoliy Romsa", "P3")
+        new_issue = jira_api.create_task("Task", issue_summary, issue_summary, "Anatoliy.Romsa", "P3")
         response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority"
-    elif text.startwith(CREATE_STORY_COMMAND):
+        web_client.chat_postMessage(channel=channel_id, text=response)
+    elif text.startswith(CREATE_STORY_COMMAND):
         issue_summary = text[13:]
-        new_issue = jira_api.create_task("Story", issue_summary, issue_summary, "Anatoliy Romsa", "P3")
+        new_issue = jira_api.create_task("Story", issue_summary, issue_summary, "Anatoliy.Romsa", "P3")
         response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority"
-    elif text.startwith(CREATE_IMPROVEMENT_COMMAND):
+        web_client.chat_postMessage(channel=channel_id, text=response)
+    elif text.startswith(CREATE_IMPROVEMENT_COMMAND):
         issue_summary = text[19:]
-        new_issue = jira_api.create_task("Improvement", issue_summary, issue_summary, "Anatoliy Romsa", "P3")
+        new_issue = jira_api.create_task("Improvement", issue_summary, issue_summary, "Anatoliy.Romsa", "P3")
         response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority"
-    else:
+        web_client.chat_postMessage(channel=channel_id, text=response)
+    elif text and text.lower() == "jirabot_help":
         response = EXAMPLE_COMMAND
+        web_client.chat_postMessage(channel=channel_id, text=response)
     #Send response to the channel
-    web_client.chat_postMessage(channel=channel_id, text=response)
+
 
 
 
