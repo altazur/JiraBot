@@ -15,6 +15,24 @@ CREATE_TASK_COMMAND = "create_task"
 CREATE_STORY_COMMAND = "create_story"
 CREATE_IMPROVEMENT_COMMAND = "create_improvement"
 
+WELCOME_BLOCK_INTRO = {
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": "Hi! I'm JiraBot. I'm here to help you create Jira issues right here!"
+            }
+        }
+WELCOME_BLOCK_DIVIDER = {
+        "type": "divider"
+        }
+WELCOME_BLOCK_INSTRUCTIONS = {
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": f"To create *bug* write '{CREATE_BUG_COMMAND} [Summary]'\nTo create *task* write '{CREATE_TASK_COMMAND} [Summary]'\nTo create *story* write '{CREATE_STORY_COMMAND} [Summary]\nTo create *improvement* write '{CREATE_IMPROVEMENT_COMMAND} [Summary]\nGood luck! :wink:"
+            }
+        }
+
 @RTMClient.run_on(event="message")
 def create_issue(**payload):
     data = payload['data']
@@ -47,9 +65,16 @@ def create_issue(**payload):
             web_client.chat_postMessage(channel=channel_id, text=response)
         elif text and text.lower() == "jirabot_help":
             response = EXAMPLE_COMMAND
-            web_client.chat_postMessage(channel=channel_id, text=response)
+            web_client.chat_postMessage(channel=channel_id, blocks=[WELCOME_BLOCK_INTRO, WELCOME_BLOCK_DIVIDER, WELCOME_BLOCK_INSTRUCTIONS])
     else:
         return
+
+@RTMClient.run_on(event="bot_added")
+def introduction(**payload):
+   data = payload['data']
+   channel_id = data.get('channel')
+   web_client = payload['web_client']
+   
 
 
 
