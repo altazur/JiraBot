@@ -42,7 +42,6 @@ def create_issue(**payload):
     text = data.get('text')
 
     if text is not None:#This check needed in order to prevent None type startwith checking
-
         if text.startswith(CREATE_BUG_COMMAND):
             issue_summary = text[11:]
             new_issue = jira_api.create_task("Bug", issue_summary, issue_summary, "Anatoliy.Romsa", "P3")
@@ -74,9 +73,6 @@ def introduction(**payload):
    data = payload['data']
    channel_id = data.get('channel')
    web_client = payload['web_client']
-   
-
-
 
 if __name__=="__main__":
     jira_api = JiraAPI(options={'server':JIRA_URL}, basic_auth=(JIRA_LOGIN,JIRA_PASSWORD))
@@ -84,4 +80,3 @@ if __name__=="__main__":
     rtm_client = RTMClient(token=SLACK_BOT_TOKEN)
     print("SlackBot connected")
     rtm_client.start()
-    #TODO:Infinite loop due to the "message" event is the any message in the channel. Even the bot response. So he is starting talk to himself :)
