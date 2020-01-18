@@ -43,22 +43,22 @@ def create_issue(**payload):
 
     if text is not None:#This check needed in order to prevent None type startwith checking
         if text.startswith(CREATE_BUG_COMMAND):
-            issue_summary = text[11:]
+            issue_summary = text[len(CREATE_BUG_COMMAND)+1:] # Get the summary from the text without command itself and a space(+1)
             new_issue = jira_api.create_task("Bug", issue_summary, issue_summary, "Anatoliy.Romsa", "P3")
             response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority. Here's the link: {JIRA_URL}/browse/{new_issue.key}"
             web_client.chat_postMessage(channel=channel_id, text=response)
         elif text.startswith(CREATE_TASK_COMMAND):
-            issue_summary = text[12:]
+            issue_summary = text[len(CREATE_TASK_COMMAND)+1:]
             new_issue = jira_api.create_task("Task", issue_summary, issue_summary, "Anatoliy.Romsa", "P3")
             response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority. Here's the link: {JIRA_URL}/browse/{new_issue.key}"
             web_client.chat_postMessage(channel=channel_id, text=response)
         elif text.startswith(CREATE_STORY_COMMAND):
-            issue_summary = text[13:]
+            issue_summary = text[len(CREATE_STORY_COMMAND)+1:]
             new_issue = jira_api.create_task("Story", issue_summary, issue_summary, "Anatoliy.Romsa", "P3")
             response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority. Here's the link: {JIRA_URL}/browse/{new_issue.key}"
             web_client.chat_postMessage(channel=channel_id, text=response)
         elif text.startswith(CREATE_IMPROVEMENT_COMMAND):
-            issue_summary = text[19:]
+            issue_summary = text[len(CREATE_IMPROVEMENT_COMMAND)+1:]
             new_issue = jira_api.create_task("Improvement", issue_summary, issue_summary, "Anatoliy.Romsa", "P3")
             response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority. Here's the link: {JIRA_URL}/browse/{new_issue.key}"
             web_client.chat_postMessage(channel=channel_id, text=response)
