@@ -28,4 +28,4 @@ def get_assignee_from_message(message, assignee_command):
         message_words = message.split(" ")
         return message_words[message_words.index(assignee_command)+1] # Return the next word after 'Assignee:' or another assignee command
     else:
-        return 'anatoliy.romsa'
+        return 'Anatoliy.Romsa'
