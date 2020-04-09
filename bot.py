@@ -1,6 +1,8 @@
 import os
+from jira import JIRAError
 from JiraAPI import JiraAPI
 from slack import WebClient, RTMClient
+from bot_command_parser import get_project_from_message, get_summary_from_message, get_assignee_from_message
 #Using 'SLACK_BOT_TOKEN' sys env
 #Using 'JIRA_LOGIN', 'JIRA_PASSWORD', 'JIRA_URL' sys env
 
@@ -14,6 +16,9 @@ CREATE_BUG_COMMAND = "create_bug"
 CREATE_TASK_COMMAND = "create_task"
 CREATE_STORY_COMMAND = "create_story"
 CREATE_IMPROVEMENT_COMMAND = "create_improvement"
+ASSIGNEE_COMMAND = "Assignee:"
+PROJECT_COMMAND = "Project:"
+ALL_COMMANDS = [CREATE_BUG_COMMAND, CREATE_TASK_COMMAND, CREATE_STORY_COMMAND, CREATE_IMPROVEMENT_COMMAND, ASSIGNEE_COMMAND, PROJECT_COMMAND] # For get summary method
 
 WELCOME_BLOCK_INTRO = {
         "type": "section",
@@ -33,6 +38,17 @@ WELCOME_BLOCK_INSTRUCTIONS = {
             }
         }
 
+def prepare_issue(issue_type, text):
+    """Returns jira issue based on the user message text and type"""
+    issue_summary = get_summary_from_message(ALL_COMMANDS, text)
+    assignee = get_assignee_from_message(text, ASSIGNEE_COMMAND)
+    project = get_project_from_message(text, PROJECT_COMMAND)
+    new_issue = jira_api.create_task(issue_type, issue_summary, issue_summary, assignee, "P3", project)
+    return new_issue
+
+def prepeare_bot_response(new_issue):
+    return f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the {new_issue.fields.project} backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority. Here's the link: {JIRA_URL}/browse/{new_issue.key}"
+
 @RTMClient.run_on(event="message")
 def create_issue(**payload):
     data = payload['data']
@@ -43,24 +59,32 @@ def create_issue(**payload):
 
     if text is not None:#This check needed in order to prevent None type startwith checking
         if text.startswith(CREATE_BUG_COMMAND):
-            issue_summary = text[11:]
-            new_issue = jira_api.create_task("Bug", issue_summary, issue_summary, "Anatoliy.Romsa", "P3")
-            response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority. Here's the link: {JIRA_URL}/browse/{new_issue.key}"
+            try:
+                new_issue = prepare_issue("Bug", text)
+                response = prepeare_bot_response(new_issue)
+            except JIRAError as e:
+                response = e.text 
             web_client.chat_postMessage(channel=channel_id, text=response)
         elif text.startswith(CREATE_TASK_COMMAND):
-            issue_summary = text[12:]
-            new_issue = jira_api.create_task("Task", issue_summary, issue_summary, "Anatoliy.Romsa", "P3")
-            response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority. Here's the link: {JIRA_URL}/browse/{new_issue.key}"
+            try:
+                new_issue = prepare_issue("Task", text)
+                response = prepeare_bot_response(new_issue)
+            except JIRAError as e:
+                response = e.text
             web_client.chat_postMessage(channel=channel_id, text=response)
         elif text.startswith(CREATE_STORY_COMMAND):
-            issue_summary = text[13:]
-            new_issue = jira_api.create_task("Story", issue_summary, issue_summary, "Anatoliy.Romsa", "P3")
-            response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority. Here's the link: {JIRA_URL}/browse/{new_issue.key}"
+            try:
+                new_issue = prepare_issue("Story", text)
+                response = prepeare_bot_response(new_issue)
+            except JIRAError as e:
+                response = e.text
             web_client.chat_postMessage(channel=channel_id, text=response)
         elif text.startswith(CREATE_IMPROVEMENT_COMMAND):
-            issue_summary = text[19:]
-            new_issue = jira_api.create_task("Improvement", issue_summary, issue_summary, "Anatoliy.Romsa", "P3")
-            response = f"The {new_issue.fields.issuetype} {new_issue.key} has been added to the backlog with {new_issue.fields.assignee} assignment and {new_issue.fields.priority} priority. Here's the link: {JIRA_URL}/browse/{new_issue.key}"
+            try:
+                new_issue = prepare_issue("Improvement", text)
+                response = prepeare_bot_response(new_issue)
+            except JIRAError as e:
+                response = e.text
             web_client.chat_postMessage(channel=channel_id, text=response)
         elif text and text.lower() == "jirabot_help":
             response = EXAMPLE_COMMAND
