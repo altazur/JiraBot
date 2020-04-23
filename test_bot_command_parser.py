@@ -27,7 +27,7 @@ def test_get_project_from_message(test_msg, test_cmd, expected):
         [
             ("create_improvement Some impr of the issue Assignee: test.test", "Assignee:", "test.test"), 
             ("create_bug Some bug Project: FOT Assignee: me", "Assignee:", "me"), 
-            ("create_bug Find some beer", "Assignee:", "anatoliy.romsa")
+            ("create_bug Find some beer", "Assignee:", "Anatoliy.Romsa")
             ])
 def test_get_assignee_from_message(test_msg, test_cmd, expected):
     assert get_assignee_from_message(test_msg, test_cmd) == expected
