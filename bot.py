@@ -11,7 +11,7 @@ JIRA_LOGIN = os.environ['JIRA_LOGIN']
 JIRA_PASSWORD = os.environ['JIRA_PASSWORD']
 JIRA_URL = os.environ['JIRA_URL']
 
-EXAMPLE_COMMAND = "To create jira issue just type 'create_{issue type} {issue_summary}'. For example, 'create_bug This bot stinks'"
+EXAMPLE_COMMAND = "To create jira issue just type 'create_{issue type} {issue_summary} Project: {Jira project id}(optional) Assignee: {Jira username} (optional)'. For example, 'create_bug This bot stinks'"
 CREATE_BUG_COMMAND = "create_bug"
 CREATE_TASK_COMMAND = "create_task"
 CREATE_STORY_COMMAND = "create_story"
