@@ -10,7 +10,7 @@ ENV JIRA_URL="${JIRA_URL}"
 ENV JIRA_LOGIN="${JIRA_LOGIN}"
 ENV JIRA_PASSWORD="${JIRA_PASSWORD}"
 
-ADD bot.py JiraAPI.py /app/
+ADD bot.py JiraAPI.py bot_command_parser.py /app/
 COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
 RUN pip install -r requirements.txt
