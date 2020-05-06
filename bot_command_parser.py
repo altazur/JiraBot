@@ -23,11 +23,16 @@ def get_summary_from_message(commands: list, message):
 
 def get_project_from_message(message, project_command):
     """Return project from message if there was some or returns default one"""
+    default_project = 'FOT'
     if project_command in message:
         message_words = message.split(" ") # Make a list of message words by spaces"
-        return message_words[message_words.index(project_command)+1] # Return the next word after 'Project:' or another project command
+        project = message_words[message_words.index(project_command)+1] # Return the next word after 'Project:' or another project command
+        if project != " " or "":
+            return project
+        else:
+            return default_project
     else:
-        return 'FOT' # Default project
+        return default_project
 
 def get_assignee_from_message(message, assignee_command):
     """Return assignee from message if there was some or returns default one"""
