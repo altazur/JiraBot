@@ -26,7 +26,10 @@ def get_project_from_message(message, project_command):
     default_project = 'FOT'
     if project_command in message:
         message_words = message.split(" ") # Make a list of message words by spaces"
-        project = message_words[message_words.index(project_command)+1] # Return the next word after 'Project:' or another project command
+        try:
+            project = message_words[message_words.index(project_command)+1] # Return the next word after 'Project:' or another project command
+        except IndexError:
+            return default_project
         if project != " " or "":
             return project
         else:
@@ -39,7 +42,10 @@ def get_assignee_from_message(message, assignee_command):
     default_assignee = 'anatoliy.romsa'
     if assignee_command in message:
         message_words = message.split(" ")
-        assignee = message_words[message_words.index(assignee_command)+1] # Return the next word after 'Assignee:' or another assignee command
+        try:
+            assignee = message_words[message_words.index(assignee_command)+1] # Return the next word after 'Assignee:' or another assignee command
+        except IndexError:
+            return default_assignee
         if assignee != " " or "": # If it's not the space
             return assignee
         else:
