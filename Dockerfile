@@ -13,6 +13,7 @@ ENV JIRA_PASSWORD="${JIRA_PASSWORD}"
 ADD bot.py JiraAPI.py bot_command_parser.py /app/
 COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN apt-get update \
 	&& apt-get install openssl \
