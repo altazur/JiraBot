@@ -3,14 +3,21 @@ def get_summary_from_message(commands: list, message):
     function return everything but the commands and their value"""
     if commands is not None:
         message_words = message.split(" ")
+        summary_words_list = []
+        command_word = False # Raise the flag if the next word should be the command word like Assignee: somebody"
         for index, word in enumerate(message_words):
+            if command_word: # Skip the loop if the next word is the part of the command
+                command_word = False
+                continue
             if word in commands:
-                if "_" in word: # Very dirty. That's the hack to define the main command like create_bug. They always contains '_' for now
-                    message_words.pop(index)
-                else:
-                    message_words.pop(index+1) # Remove the command value
-                    message_words.pop(index) # Remove the command itself
-        return " ".join(message_words)
+                if "_" in word: # The dirty hack for main command
+                    continue
+                else: # If the command like Assignee: (with two words)
+                    command_word = True # Fot skipping the next word too
+                    continue
+            else:
+                summary_words_list.append(message_words[index])
+        return " ".join(summary_words_list)
     else:
         raise TypeError("Somehow there is no bot command in user message")
 
@@ -28,4 +35,4 @@ def get_assignee_from_message(message, assignee_command):
         message_words = message.split(" ")
         return message_words[message_words.index(assignee_command)+1] # Return the next word after 'Assignee:' or another assignee command
     else:
-        return 'Anatoliy.Romsa'
+        return 'anatoliy.romsa'
