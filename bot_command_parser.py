@@ -31,8 +31,13 @@ def get_project_from_message(message, project_command):
 
 def get_assignee_from_message(message, assignee_command):
     """Return assignee from message if there was some or returns default one"""
+    default_assignee = 'anatoliy.romsa'
     if assignee_command in message:
         message_words = message.split(" ")
-        return message_words[message_words.index(assignee_command)+1] # Return the next word after 'Assignee:' or another assignee command
+        assignee = message_words[message_words.index(assignee_command)+1] # Return the next word after 'Assignee:' or another assignee command
+        if assignee != " " or "": # If it's not the space
+            return assignee
+        else:
+            return default_assignee
     else:
-        return 'anatoliy.romsa'
+        return default_assignee 
