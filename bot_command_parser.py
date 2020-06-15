@@ -24,12 +24,14 @@ def get_summary_from_message(commands: list, message):
 def get_project_from_message(message, project_command):
     """Return project from message if there was some or returns default one"""
     default_project = 'FOT'
-    if project_command in message:
+    if project_command.lower() in message.lower():
         message_words = message.split(" ") # Make a list of message words by spaces"
         try:
             project = message_words[message_words.index(project_command)+1] # Return the next word after 'Project:' or another project command
         except IndexError:
             return default_project
+        except ValueError: # If project command not found here
+            project = message_words[message_words.index(project_command.lower())+1] # The reason is the command was written in lower case
         if project != " " or "":
             return project
         else:
@@ -40,12 +42,14 @@ def get_project_from_message(message, project_command):
 def get_assignee_from_message(message, assignee_command):
     """Return assignee from message if there was some or returns default one"""
     default_assignee = 'anatoliy.romsa'
-    if assignee_command in message:
+    if assignee_command.lower() in message.lower():
         message_words = message.split(" ")
         try:
             assignee = message_words[message_words.index(assignee_command)+1] # Return the next word after 'Assignee:' or another assignee command
         except IndexError:
             return default_assignee
+        except ValueError: # If assignee command isn't found here
+            assignee = message_words[message_words.index(assignee_command.lower())+1] # The command was written in lower case
         if assignee != " " or "": # If it's not the space
             return assignee
         else:
