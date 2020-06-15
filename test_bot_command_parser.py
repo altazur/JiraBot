@@ -22,7 +22,8 @@ def test_error_get_summary_from_message():
         [
             ("create_story Some story Project: BRU Assignee: anatoliy.anatoliy", "Project:", "BRU"), 
             ("create_task Some task without project Assignee: test.test", "Project:", "FOT"),
-            ("create_task Some task without project Assignee: ", "Project:", "FOT")
+            ("create_task Some task without project Assignee: ", "Project:", "FOT"),
+            ("create_task Some task with project project: WPM", "Project:", "WPM")
             ])
 def test_get_project_from_message(test_msg, test_cmd, expected):
     assert get_project_from_message(test_msg, test_cmd) == expected
@@ -32,7 +33,8 @@ def test_get_project_from_message(test_msg, test_cmd, expected):
             ("create_improvement Some impr of the issue Assignee: test.test", "Assignee:", "test.test"), 
             ("create_bug Some bug Project: FOT Assignee: me", "Assignee:", "me"), 
             ("create_bug Find some beer", "Assignee:", "anatoliy.romsa"),
-            ("create_bug bug Assignee:  Project:", "Assignee:", "anatoliy.romsa")
+            ("create_bug bug Assignee:  Project:", "Assignee:", "anatoliy.romsa"),
+            ("create_bug Some bug assignee: Ivanov project: FOT", "Assignee:", "Ivanov")
             ])
 def test_get_assignee_from_message(test_msg, test_cmd, expected):
     assert get_assignee_from_message(test_msg, test_cmd) == expected
