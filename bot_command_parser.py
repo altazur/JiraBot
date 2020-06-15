@@ -20,39 +20,37 @@ def get_summary_from_message(commands: list, message):
         return " ".join(summary_words_list)
     else:
         raise TypeError("Somehow there is no bot command in user message")
+        
+def get_case_insensetive_command_value(message_list: list, command: str) -> str:
+    """Return the value of command despite the used cased if the command really exists or None if the list or command are None"""
+    if message_list and command is not None:
+        try:
+            command_value = message_list[message_list.index(command)+1]
+        except ValueError:
+            command_value = message_list[message_list.index(command.lower())+1]
+        except IndexError:
+            command_value = None
+        return command_value
+    return None
 
 def get_project_from_message(message, project_command):
     """Return project from message if there was some or returns default one"""
     default_project = 'FOT'
     if project_command.lower() in message.lower():
         message_words = message.split(" ") # Make a list of message words by spaces"
-        try:
-            project = message_words[message_words.index(project_command)+1] # Return the next word after 'Project:' or another project command
-        except IndexError:
-            return default_project
-        except ValueError: # If project command not found here
-            project = message_words[message_words.index(project_command.lower())+1] # The reason is the command was written in lower case
-        if project != " " or "":
-            return project
-        else:
-            return default_project
-    else:
-        return default_project
+        project = get_case_insensetive_command_value(message_words, project_command)
+        if project is not None:
+            if project != "" and project != " ":
+                return project
+    return default_project
 
 def get_assignee_from_message(message, assignee_command):
     """Return assignee from message if there was some or returns default one"""
     default_assignee = 'anatoliy.romsa'
     if assignee_command.lower() in message.lower():
         message_words = message.split(" ")
-        try:
-            assignee = message_words[message_words.index(assignee_command)+1] # Return the next word after 'Assignee:' or another assignee command
-        except IndexError:
-            return default_assignee
-        except ValueError: # If assignee command isn't found here
-            assignee = message_words[message_words.index(assignee_command.lower())+1] # The command was written in lower case
-        if assignee != " " or "": # If it's not the space
-            return assignee
-        else:
-            return default_assignee
-    else:
-        return default_assignee 
+        assignee = get_case_insensetive_command_value(message_words, assignee_command)
+        if assignee is not None:
+            if assignee != "" and assignee != " ":
+                return assignee
+    return default_assignee
