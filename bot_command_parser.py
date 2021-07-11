@@ -54,3 +54,14 @@ def get_assignee_from_message(message, assignee_command):
             if assignee != "" and assignee != " ":
                 return assignee
     return default_assignee
+
+def get_priority_from_message(message, priority_command):
+    """ Returns priority from message. Otherwise returns 'P3'"""
+    default_priority = "P3"
+    if priority_command.lower() in message.lower():
+        message_words = message.split(" ")
+        priority = get_case_insensetive_command_value(message_words, priority_command)
+        if priority is not None:
+            if priority != "" and priority != " ":
+                return priority
+    return default_priority
