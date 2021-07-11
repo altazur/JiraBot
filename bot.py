@@ -2,7 +2,7 @@ import os
 from jira import JIRAError
 from JiraAPI import JiraAPI
 from slack import WebClient, RTMClient
-from bot_command_parser import get_project_from_message, get_summary_from_message, get_assignee_from_message
+from bot_command_parser import get_project_from_message, get_summary_from_message, get_assignee_from_message, get_priority_from_message
 #Using 'SLACK_BOT_TOKEN' sys env
 #Using 'JIRA_LOGIN', 'JIRA_PASSWORD', 'JIRA_URL' sys env
 
@@ -18,6 +18,7 @@ CREATE_STORY_COMMAND = "create_story"
 CREATE_IMPROVEMENT_COMMAND = "create_improvement"
 ASSIGNEE_COMMAND = "Assignee:"
 PROJECT_COMMAND = "Project:"
+PRIORITY_COMMAND = "Priority:"
 ALL_COMMANDS = [CREATE_BUG_COMMAND, CREATE_TASK_COMMAND, CREATE_STORY_COMMAND, CREATE_IMPROVEMENT_COMMAND, ASSIGNEE_COMMAND, PROJECT_COMMAND] # For get summary method
 
 WELCOME_BLOCK_INTRO = {
@@ -43,7 +44,8 @@ def prepare_issue(issue_type, text):
     issue_summary = get_summary_from_message(ALL_COMMANDS, text)
     assignee = get_assignee_from_message(text, ASSIGNEE_COMMAND)
     project = get_project_from_message(text, PROJECT_COMMAND)
-    new_issue = jira_api.create_task(issue_type, issue_summary, issue_summary, assignee, "P3", project)
+    priority = get_priority_from_message(text, PRIORITY_COMMAND)
+    new_issue = jira_api.create_task(issue_type, issue_summary, issue_summary, assignee, priority, project)
     return new_issue
 
 def prepeare_bot_response(new_issue):
